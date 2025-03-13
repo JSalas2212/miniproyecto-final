@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Productos</title>
+</head>
+<body>
+    <h1>Editar Producto</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Muestra el formulario -->
+        <button type="submit">Guardar cambios</button>
+    </form>
+    <a href="{% url 'Productos' %}">Volver a la lista</a>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito de Compras</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+            width: 100%;
+        }
+        .carrito-item {
+            border-bottom: 1px solid white;
+            padding: 15px 0;
+        }
+        .btn-custom {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Carrito de Compras 🛒</h1>
+
+
+        {% if carrito %}
+            <ul class="list-group">
+                {% for id, item in carrito.items %}
+                <li class="list-group-item bg-transparent text-white carrito-item">
+                    <p><strong>Producto:</strong> {{ item.nombre }}</p>
+                    <p><strong>Precio:</strong> ${{ item.precio }}</p>
+                    <form method="post" action="{% url 'actualizar_carrito' id %}" class="d-inline">
+                        {% csrf_token %}
+                        <label for="cantidad">Cantidad:</label>
+                        <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" max="{{ item.stock }}" class="form-control d-inline w-25">
+                        <button type="submit" class="btn btn-warning btn-sm">Actualizar</button>
+                    </form>
+                    <a href="{% url 'eliminar_del_carrito' id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <h3 class="mt-4">Total a Pagar: ${{ total }}</h3>
+
+            <a href="{% url 'vaciar_carrito' %}" class="btn btn-danger btn-custom">Vaciar Carrito</a>
+
+            <form method="post" action="{% url 'realizar_compra' %}" class="mt-4">
+                {% csrf_token %}
+                <label for="cliente_id" class="form-label">Seleccionar Cliente:</label>
+                <select name="cliente_id" id="cliente_id" class="form-select">
+                    {% for cliente in clientes %}
+                    <option value="{{ cliente.id }}">{{ cliente.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-success btn-custom">Realizar Compra</button>
+            </form>
+
+        {% else %}
+            <p class="text-center">Tu carrito está vacío.</p>
+        {% endif %}
+
+        <a href="{% url 'Productos' %}" class="btn btn-light btn-custom">Volver a la lista de productos</a>
+    </div>
+</body>
+</html>
